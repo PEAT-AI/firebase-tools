@@ -46,6 +46,7 @@
   ],
   "homepage": "https://github.com/firebase/firebase-tools",
   "dependencies": {
+    "@google-cloud/logging": "^1.2.0",
     "JSONStream": "^1.2.1",
     "archiver": "^2.1.1",
     "chalk": "^1.1.0",

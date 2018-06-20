@@ -27,9 +27,18 @@ module.exports = new Command("database:profile")
     "--instance <instance>",
     "use the database <instance>.firebaseio.com (if omitted, use default database instance)"
   )
+  .option(
+    "--admin <adminKeyPath>",
+    "absolute path to admin key which will be used to upload logs to stackdriver"
+  )
   .before(requireAccess)
   .action(function(options) {
     // Validate options
+    if (!_.has(options, "admin")) {
+      return utils.reject("Admin key path must be specified to upload logs", {
+        exit: 1,
+      });
+    }
     if (options.raw && options.input) {
       return utils.reject("Cannot specify both an input file and raw format", {
         exit: 1,
