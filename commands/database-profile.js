@@ -34,7 +34,7 @@ module.exports = new Command("database:profile")
   .before(requireAccess)
   .action(function(options) {
     // Validate options
-    if (!_.has(options, "admin")) {
+    if (!_.has(options, "admin") && !_.has(options, "input")) {
       return utils.reject("Admin key path must be specified to upload logs", {
         exit: 1,
       });
