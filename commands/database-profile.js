@@ -34,11 +34,6 @@ module.exports = new Command("database:profile")
   .before(requireAccess)
   .action(function(options) {
     // Validate options
-    if (!_.has(options, "admin") && !_.has(options, "input")) {
-      return utils.reject("Admin key path must be specified to upload logs", {
-        exit: 1,
-      });
-    }
     if (options.raw && options.input) {
       return utils.reject("Cannot specify both an input file and raw format", {
         exit: 1,
