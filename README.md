@@ -1,7 +1,7 @@
 # Firebase CLI [![Build Status](https://travis-ci.org/firebase/firebase-tools.svg?branch=master)](https://travis-ci.org/firebase/firebase-tools) [![Coverage Status](https://img.shields.io/coveralls/firebase/firebase-tools.svg?branch=master&style=flat)](https://coveralls.io/r/firebase/firebase-tools) [![Node Version](https://img.shields.io/node/v/firebase-tools.svg)](https://www.npmjs.com/package/firebase-tools) [![NPM version](https://badge.fury.io/js/firebase-tools.svg)](http://badge.fury.io/js/firebase-tools)
 
 ## This is a modified version of firebase-tools, that will push database profiles automatically to stackdriver
-The main change is a added option to **database:profile**
+The main change is a added option to **database:profile**  
 **--admin \<adminKeyPath\>** absolute path to admin key which will be used to upload logs to stackdriver
 
 ### Update
