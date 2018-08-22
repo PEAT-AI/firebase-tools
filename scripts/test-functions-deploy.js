@@ -13,7 +13,7 @@ var scopes = require("../lib/scopes");
 var configstore = require("../lib/configstore");
 var extractTriggers = require("../lib/extractTriggers");
 
-var chalk = require("chalk");
+var clc = require("cli-color");
 var firebase = require("firebase");
 var functions = require("firebase-functions");
 var admin = require("firebase-admin");
@@ -28,6 +28,13 @@ var localFirebase = __dirname + "/../bin/firebase";
 var TIMEOUT = 40000;
 var tmpDir;
 var app;
+
+var deleteAllFunctions = function() {
+  var toDelete = _.map(parseFunctionsList(), function(funcName) {
+    return funcName.replace("-", ".");
+  });
+  return localFirebase + " functions:delete " + toDelete.join(" ") + " -f";
+};
 
 var parseFunctionsList = function() {
   var configStub = sinon.stub(functions, "config").returns({
@@ -62,26 +69,40 @@ var preTest = function() {
     storageBucket: "functions-integration-test.appspot.com",
   };
   app = firebase.initializeApp(config);
+  try {
+    execSync(deleteAllFunctions(), { cwd: tmpDir, stdio: "ignore" });
+  } catch (e) {
+    // do nothing
+  }
   console.log("Done pretest prep.");
 };
 
 var postTest = function() {
   fs.remove(tmpDir);
+  try {
+    execSync(deleteAllFunctions(), { cwd: tmpDir, stdio: "ignore" });
+  } catch (e) {
+    // do nothing
+  }
   execSync(localFirebase + " database:remove / -y", { cwd: tmpDir });
   console.log("Done post-test cleanup.");
   process.exit();
 };
 
 var checkFunctionsListMatch = function(expectedFunctions) {
+  var deployedFunctions;
   return cloudfunctions
     .list(projectId, region)
     .then(function(result) {
-      var deployedFunctions = _.map(result, "functionName");
+      deployedFunctions = _.map(result, "functionName");
       expect(_.isEmpty(_.xor(expectedFunctions, deployedFunctions))).to.be.true;
       return true;
     })
     .catch(function(err) {
-      expect(err).to.be.null;
+      console.log(clc.red("Deployed functions do not match expected functions"));
+      console.log("Expected functions are: ", expectedFunctions);
+      console.log("Deployed functions are: ", deployedFunctions);
+      return Promise.reject(err);
     });
 };
 
@@ -100,12 +121,12 @@ var testCreateUpdateWithFilter = function() {
   fs.copySync(functionsSource, tmpDir + "/functions/index.js");
   return new Promise(function(resolve) {
     exec(
-      localFirebase + " deploy --only functions:dbAction,functions:httpsAction",
+      localFirebase + " deploy --only functions:nested,functions:httpsAction",
       { cwd: tmpDir },
       function(err, stdout) {
         console.log(stdout);
         expect(err).to.be.null;
-        resolve(checkFunctionsListMatch(["dbAction", "httpsAction"]));
+        resolve(checkFunctionsListMatch(["nested-dbAction", "httpsAction"]));
       }
     );
   });
@@ -113,10 +134,7 @@ var testCreateUpdateWithFilter = function() {
 
 var testDelete = function() {
   return new Promise(function(resolve) {
-    exec("> functions/index.js &&" + localFirebase + " deploy", { cwd: tmpDir }, function(
-      err,
-      stdout
-    ) {
+    exec(deleteAllFunctions(), { cwd: tmpDir }, function(err, stdout) {
       console.log(stdout);
       expect(err).to.be.null;
       resolve(checkFunctionsListMatch([]));
@@ -126,15 +144,11 @@ var testDelete = function() {
 
 var testDeleteWithFilter = function() {
   return new Promise(function(resolve) {
-    exec(
-      "> functions/index.js &&" + localFirebase + " deploy --only functions:dbAction",
-      { cwd: tmpDir },
-      function(err, stdout) {
-        console.log(stdout);
-        expect(err).to.be.null;
-        resolve(checkFunctionsListMatch(["httpsAction"]));
-      }
-    );
+    exec(localFirebase + " functions:delete nested -f", { cwd: tmpDir }, function(err, stdout) {
+      console.log(stdout);
+      expect(err).to.be.null;
+      resolve(checkFunctionsListMatch(["httpsAction"]));
+    });
   });
 };
 
@@ -149,7 +163,7 @@ var testUnknownFilter = function() {
           "the following filters were specified but do not match any functions in the project: unknownFilter"
         );
         expect(err).to.be.null;
-        resolve(checkFunctionsListMatch(["httpsAction"]));
+        resolve();
       }
     );
   });
@@ -267,36 +281,36 @@ var main = function() {
   preTest();
   testCreateUpdate()
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: creating functions"));
+      console.log(clc.green("\u2713 Test passed: creating functions"));
       return testCreateUpdate();
     })
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: updating functions"));
+      console.log(clc.green("\u2713 Test passed: updating functions"));
       return testFunctionsTrigger();
     })
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: triggering functions"));
+      console.log(clc.green("\u2713 Test passed: triggering functions"));
       return testDelete();
     })
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: deleting functions"));
+      console.log(clc.green("\u2713 Test passed: deleting functions"));
       return testCreateUpdateWithFilter();
     })
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: creating functions with filters"));
+      console.log(clc.green("\u2713 Test passed: creating functions with filters"));
       return testDeleteWithFilter();
     })
     .then(function() {
-      console.log(chalk.green("\u2713 Test passed: deleting functions with filters"));
+      console.log(clc.green("\u2713 Test passed: deleting functions with filters"));
       return testUnknownFilter();
     })
     .then(function() {
       console.log(
-        chalk.green("\u2713 Test passed: threw warning when passing filter with unknown identifier")
+        clc.green("\u2713 Test passed: threw warning when passing filter with unknown identifier")
       );
     })
     .catch(function(err) {
-      console.log(chalk.red("Error while running tests: "), err);
+      console.log(clc.red("Error while running tests: "), err);
       return Promise.resolve();
     })
     .then(postTest);

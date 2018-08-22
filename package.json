@@ -1,6 +1,6 @@
 {
   "name": "firebase-tools",
-  "version": "3.19.3",
+  "version": "4.2.0",
   "description": "Command-Line Interface for Firebase",
   "main": "index.js",
   "bin": {
@@ -49,8 +49,8 @@
     "@google-cloud/logging": "^1.2.0",
     "JSONStream": "^1.2.1",
     "archiver": "^2.1.1",
-    "chalk": "^1.1.0",
     "cjson": "^0.3.1",
+    "cli-color": "^1.2.0",
     "cli-table": "^0.3.1",
     "commander": "^2.8.1",
     "configstore": "^1.2.0",
@@ -69,15 +69,15 @@
     "is": "^3.2.1",
     "jsonschema": "^1.0.2",
     "jsonwebtoken": "^8.2.1",
-    "lodash": "^4.6.1",
+    "lodash": "^4.17.10",
     "minimatch": "^3.0.4",
     "opn": "^5.3.0",
     "ora": "0.2.3",
     "portfinder": "^1.0.13",
     "progress": "^2.0.0",
-    "request": "^2.58.0",
+    "request": "^2.87.0",
     "semver": "^5.0.3",
-    "superstatic": "^5.0.2",
+    "superstatic": "^6.0.1",
     "tar": "^4.3.0",
     "tmp": "0.0.33",
     "universal-analytics": "^0.4.16",
@@ -106,6 +106,6 @@
     "sinon-chai": "^2.8.0"
   },
   "optionalDependencies": {
-    "@google-cloud/functions-emulator": "^1.0.0-beta.4"
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5"
   }
 }
