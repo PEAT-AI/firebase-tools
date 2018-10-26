@@ -32,7 +32,6 @@ module.exports = new Command("database:profile")
     "--admin <adminKeyPath>",
     "absolute path to admin key which will be used to upload logs to stackdriver"
   )
-  .before(requireAccess)
   .before(requirePermissions, ["firebasedatabase.instances.update"])
   .before(requireInstance)
   .action(function(options) {
