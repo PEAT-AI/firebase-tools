@@ -24,19 +24,31 @@ const _emulators = {
     stdout: null,
     cacheDir: CACHE_DIR,
     remoteUrl:
-      "https://storage.googleapis.com/firebase-preview-drop/emulator/cloud-firestore-emulator-v1.2.0.jar",
-    localPath: path.join(CACHE_DIR, "cloud-firestore-emulator-v1.2.0.jar"),
+      "https://storage.googleapis.com/firebase-preview-drop/emulator/cloud-firestore-emulator-v1.2.1.jar",
+    localPath: path.join(CACHE_DIR, "cloud-firestore-emulator-v1.2.1.jar"),
   },
 };
 
 const _commands = {
   database: {
     binary: "java",
-    args: ["-jar", _emulators.database.localPath, "--port", _emulators.database.port],
+    args: [
+      "-Duser.language=en",
+      "-jar",
+      _emulators.database.localPath,
+      "--port",
+      _emulators.database.port,
+    ],
   },
   firestore: {
     binary: "java",
-    args: ["-jar", _emulators.firestore.localPath, "--port", _emulators.firestore.port],
+    args: [
+      "-Duser.language=en",
+      "-jar",
+      _emulators.firestore.localPath,
+      "--port",
+      _emulators.firestore.port,
+    ],
   },
 };
 

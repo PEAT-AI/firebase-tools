@@ -12,7 +12,7 @@ const hashcache = require("./hashcache");
 const detectProjectRoot = require("../../detectProjectRoot");
 const api = require("../../api");
 const logger = require("../../logger");
-const Queue = require("../../queue");
+const { Queue } = require("../../queue");
 
 const MIN_UPLOAD_TIMEOUT = 30000; // 30s
 const MAX_UPLOAD_TIMEOUT = 7200000; // 2h
@@ -201,6 +201,7 @@ class Uploader {
         auth: true,
         data: { files: batch },
         logOptions: { skipRequestBody: true },
+        timeout: 60000,
       })
       .then(function(result) {
         self.uploadUrl = result.body.uploadUrl;
