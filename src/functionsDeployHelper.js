@@ -86,7 +86,7 @@ function logFilters(existingNames, releaseNames, functionFilterGroups) {
     })
     .value();
   if (unmatchedFilters.length > 0) {
-    utils.logWarning(
+    throw new FirebaseError(
       clc.bold.yellow("functions: ") +
         "the following filters were specified but do not match any functions in the project: " +
         unmatchedFilters.join(", ")
