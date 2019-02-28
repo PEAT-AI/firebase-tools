@@ -1,6 +1,7 @@
 "use strict";
 
 var winston = require("winston");
+var ansiStrip = require("cli-color/strip");
 
 function expandErrors(logger) {
   var oldLogFunc = logger.log;
@@ -15,6 +16,7 @@ function expandErrors(logger) {
 }
 
 var logger = expandErrors(new winston.Logger());
+logger.addFilter((msg) => ansiStrip(msg));
 
 var debug = logger.debug;
 logger.debug = function() {
