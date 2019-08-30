@@ -2,9 +2,10 @@
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "no-restricted-globals": ["error", "name", "length"]
   },
   "parserOptions": {
-    "ecmaVersion": 6
+    "ecmaVersion": "2017"
   }
 }

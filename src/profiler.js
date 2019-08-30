@@ -12,7 +12,7 @@ var tmp = require("tmp");
 var api = require("./api");
 var utils = require("./utils");
 var ProfileReport = require("./profileReport");
-var FirebaseError = require("./error");
+var { FirebaseError } = require("./error");
 var responseToError = require("./responseToError");
 
 module.exports = function(options) {

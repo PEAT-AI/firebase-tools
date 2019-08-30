@@ -1,7 +1,7 @@
 "use strict";
 
 var clc = require("cli-color");
-var FirebaseError = require("../error");
+var { FirebaseError } = require("../error");
 
 var superstatic = require("superstatic").server;
 var utils = require("../utils");
@@ -86,7 +86,12 @@ function _start(options) {
   });
 }
 
+function _connect() {
+  return Promise.resolve();
+}
+
 module.exports = {
   start: _start,
+  connect: _connect,
   stop: _stop,
 };
